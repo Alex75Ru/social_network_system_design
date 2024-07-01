@@ -1,0 +1,366 @@
+openapi: 3.0.1
+info:
+  title: Social Network for Travelers API
+  description: "API for a social network designed for travelers, focusing on functionality\
+    \ such as posting travel experiences, commenting and rating posts, subscribing\
+    \ to other travelers, searching for popular travel destinations, and private messaging."
+  version: 1.0.0
+tags:
+  - name: users
+  - name: posts
+  - name: other
+
+servers:
+- url: 0.0.0.0:8080/api/v1
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: Register a new user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: user
+  /users/{user_id}:
+    get:
+      tags:
+        - users
+      summary: Get user information
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: User not found
+          content: {}
+    put:
+      tags:
+        - users
+      summary: Update user information
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: User not found
+          content: {}
+      x-codegen-request-body-name: user
+    delete:
+      tags:
+        - users
+      summary: Delete a user
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: User deleted
+          content: {}
+        "404":
+          description: User not found
+          content: {}
+  /posts:
+    post:
+      tags:
+        - posts
+      summary: Create a new post
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "400":
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: post
+  /posts/{post_id}:
+    get:
+      tags:
+        - posts
+      summary: Get post information
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "404":
+          description: Post not found
+          content: {}
+  /posts/{post_id}/comments:
+    post:
+      tags:
+        - posts
+      summary: Add a comment to a post
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        "201":
+          description: Comment added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        "404":
+          description: Post not found
+          content: {}
+      x-codegen-request-body-name: comment
+  /posts/{post_id}/ratings:
+    post:
+      tags:
+        - posts
+      summary: Rate a post
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Rating'
+        required: true
+      responses:
+        "201":
+          description: Rating added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        "404":
+          description: Post not found
+          content: {}
+      x-codegen-request-body-name: rating
+  /subscriptions:
+    post:
+      tags:
+        - other
+      summary: Subscribe to another user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Subscription'
+        required: true
+      responses:
+        "201":
+          description: Subscription created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        "400":
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: subscription
+  /destinations:
+    get:
+      tags:
+        - other
+      summary: Search for popular travel destinations
+      parameters:
+      - name: country
+        in: query
+        schema:
+          type: string
+      - name: city
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+  /messages:
+    post:
+      tags:
+        - other
+      summary: Send a private message
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      responses:
+        "201":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "400":
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: message
+  /feed:
+    get:
+      tags:
+        - other
+      summary: Get the feed of posts from subscribed users
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        photos:
+          type: array
+          items:
+            type: string
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        postId:
+          type: string
+        userId:
+          type: string
+        text:
+          type: string
+    Rating:
+      type: object
+      properties:
+        id:
+          type: string
+        postId:
+          type: string
+        userId:
+          type: string
+        value:
+          type: integer
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+        followerId:
+          type: string
+        followeeId:
+          type: string
+    Destination:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        senderId:
+          type: string
+        receiverId:
+          type: string
+        text:
+          type: string
+x-original-swagger-version: "2.0"
