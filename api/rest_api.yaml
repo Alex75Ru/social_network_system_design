@@ -34,6 +34,8 @@ paths:
         "400":
           description: Invalid input
           content: {}
+        "500":
+          description:  Internal Server Error
       x-codegen-request-body-name: user
   /users/{user_id}:
     get:
@@ -56,6 +58,8 @@ paths:
         "404":
           description: User not found
           content: {}
+        "500":
+          description:  Internal Server Error
     put:
       tags:
         - users
@@ -82,6 +86,8 @@ paths:
         "404":
           description: User not found
           content: {}
+        "500":
+          description:  Internal Server Error
       x-codegen-request-body-name: user
     delete:
       tags:
@@ -100,6 +106,8 @@ paths:
         "404":
           description: User not found
           content: {}
+        "500":
+          description:  Internal Server Error
   /posts:
     post:
       tags:
@@ -121,6 +129,24 @@ paths:
         "400":
           description: Invalid input
           content: {}
+        "500":
+          description:  Internal Server Error
+      x-codegen-request-body-name: post
+    get:
+      tags:
+        - posts
+      summary: Get the feed of posts from subscribed users
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "500":
+          description: Internal Server Error
       x-codegen-request-body-name: post
   /posts/{post_id}:
     get:
@@ -143,6 +169,8 @@ paths:
         "404":
           description: Post not found
           content: {}
+        "500":
+          description:  Internal Server Error
   /posts/{post_id}/comments:
     post:
       tags:
@@ -170,6 +198,8 @@ paths:
         "404":
           description: Post not found
           content: {}
+        "500":
+          description:  Internal Server Error
       x-codegen-request-body-name: comment
   /posts/{post_id}/ratings:
     post:
@@ -198,6 +228,8 @@ paths:
         "404":
           description: Post not found
           content: {}
+        "500":
+          description:  Internal Server Error
       x-codegen-request-body-name: rating
   /subscriptions:
     post:
@@ -220,12 +252,14 @@ paths:
         "400":
           description: Invalid input
           content: {}
+        "500":
+          description:  Internal Server Error
       x-codegen-request-body-name: subscription
-  /destinations:
+  /places:
     get:
       tags:
         - other
-      summary: Search for popular travel destinations
+      summary: Search for popular travel places
       parameters:
       - name: country
         in: query
@@ -243,7 +277,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Destination'
+                  $ref: '#/components/schemas/Place'
+        "500":
+          description:  Internal Server Error
   /messages:
     post:
       tags:
@@ -265,21 +301,9 @@ paths:
         "400":
           description: Invalid input
           content: {}
+        "500":
+          description:  Internal Server Error
       x-codegen-request-body-name: message
-  /feed:
-    get:
-      tags:
-        - other
-      summary: Get the feed of posts from subscribed users
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
 components:
   schemas:
     User:
@@ -341,7 +365,7 @@ components:
           type: string
         followeeId:
           type: string
-    Destination:
+    Place:
       type: object
       properties:
         id:
