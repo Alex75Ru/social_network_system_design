@@ -1,0 +1,41 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "A traveler using the social network")
+
+System(social_network, "Traveler Social Network", "Allows travelers to share experiences, find friends, and explore new places")
+
+System_Boundary(social_network_boundary, "Social Network") {
+    Container(web_app, "Web Application", "", "Provides the frontend interface for users")
+    Container(api_gateway, "API Gateway", "", "Manages and routes API requests")
+    Container(user_service, "User Service", "", "Handles user registration, authentication, and profile management")
+    Container(post_service, "Post Service", "", "Handles post creation, retrieval, and management")
+    Container(chat_service, "Chat Service", "", "Handles message creation, retrieval, and management")
+    Container(feed_service, "Feed Service", "", "Generates and serves user feed")
+    ContainerDb(user_db, "Main Database", "PostgreSQL", "Stores data")
+    ContainerDb(search_db, "Search Database", "Elasticsearch", "Enables full-text search")
+    Container(file_storage, "File Storage", "S3", "Stores user-uploaded files")
+    Container(cache, "Cache", "Redis", "Caches frequently accessed data")
+}
+
+Rel(user, web_app, "Uses", "HTTPS")
+Rel(web_app, api_gateway, "Makes requests to", "REST API")
+Rel(api_gateway, user_service, "Routes requests to")
+Rel(api_gateway, post_service, "Routes requests to")
+Rel(api_gateway, chat_service, "Routes requests to")
+Rel(api_gateway, feed_service, "Routes requests to")
+Rel(user_service, user_db, "Reads/Writes")
+Rel(post_service, user_db, "Reads/Writes")
+Rel(chat_service, user_db, "Reads/Writes")
+Rel(feed_service, user_db, "Reads")
+Rel(post_service, file_storage, "Uploads/Downloads")
+Rel(user_service, file_storage, "Uploads/Downloads")
+Rel(user_service, search_db, "Searches")
+Rel(post_service, search_db, "Searches")
+Rel(user_service, cache, "Caches")
+Rel(post_service, cache, "Caches")
+Rel(feed_service, cache, "Caches")
+
+@enduml
