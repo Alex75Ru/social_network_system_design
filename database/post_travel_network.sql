@@ -18,7 +18,7 @@ CREATE TABLE "posts" (
   "description" text,
   "user_id" integer,
   "status" varchar,
-  "place" integer,
+  "place_id" integer,
   "photos" integer[],
   "created_at" timestamp
 )
